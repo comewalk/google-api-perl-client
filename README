@@ -1,0 +1,27 @@
+This is Perl module Google::API::Client.
+
+INSTALLATION
+
+Google::API::Client installation is straightforward. (Although this module is not in cpan so far,) If your CPAN shell is set up,
+you should just be able to do
+
+    % cpan Google::API::Client 
+
+Download it, unpack it, then build it as per the usual:
+
+    % perl Makefile.PL
+    % make && make test
+
+Then install it:
+
+    % make install
+
+DOCUMENTATION
+
+Google::API::Client documentation is available as in POD. So you can do:
+
+    % perldoc Google::API::Client
+
+to read the documentation online with your favorite pager.
+
+Takatsugu Shigeta
