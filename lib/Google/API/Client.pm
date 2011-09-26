@@ -54,25 +54,32 @@ sub build_from_document {
 sub _create_resource {
     my $self = shift;
     my ($document, $base_url, $args) = @_;
-    my $root_resource = Google::API::Resource->new;
+    my $root_resource_obj = Google::API::Resource->new;
     for my $resource (keys %{$document->{resources}}) {
-        my $resource_obj = Google::API::Resource->new;
-        for my $method (keys %{$document->{resources}{$resource}{methods}}) {
-            $resource_obj->set_attr($method, sub {
-                my (%param) = @_;
-                return Google::API::Method->new(
-                    ua => $self->{ua},
-                    json_parser => $self->{json_parser},
-                    base_url => $base_url,
-                    doc => $document->{resources}{$resource}{methods}{$method},
-                    opt => \%param,
-                );
-            });
+        my $resource_obj;
+        if ($document->{resources}{$resource}{resources}) {
+            $resource_obj = $self->_create_resource($document->{resources}{$resource}, $base_url, $args);
+        } else {
+            $resource_obj = Google::API::Resource->new;
+            for my $method (keys %{$document->{resources}{$resource}{methods}}) {
+                $resource_obj->set_attr($method, sub {
+                    my (%param) = @_;
+                    return Google::API::Method->new(
+                        ua => $self->{ua},
+                        json_parser => $self->{json_parser},
+                        base_url => $base_url,
+                        doc => $document->{resources}{$resource}{methods}{$method},
+                        opt => \%param,
+                    );
+                });
+            }
         }
-        $root_resource->set_attr($resource, sub { $resource_obj } );
+        $root_resource_obj->set_attr($resource, sub { $resource_obj } );
     }
-    $root_resource->{auth_doc} = $document->{auth};
-    return $root_resource;
+    if ($document->{auth}) {
+        $root_resource_obj->{auth_doc} = $document->{auth};
+    }
+    return $root_resource_obj;
 }
 
 sub _new_ua {

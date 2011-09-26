@@ -4,8 +4,6 @@ use strict;
 use warnings;
 use Carp;
 
-my @METHODS;
-
 sub new {
     my $class = shift;
     bless {}, $class;
@@ -14,7 +12,8 @@ sub new {
 sub set_attr {
     my $self = shift;
     my ($name, $callback) = @_;
-    push @METHODS, { name => $name, callback => $callback };
+    push @{$self->{METHODS}}, { name => $name, callback => $callback };
+
 }
 
 our $AUTOLOAD;
@@ -24,7 +23,7 @@ sub AUTOLOAD {
     my $func_name = $AUTOLOAD;
     $func_name =~ s/^.*:://;
     return if $func_name eq 'DESTORY';
-    if (my @func = grep { $func_name eq $_->{name} } @METHODS) {
+    if (my @func = grep { $func_name eq $_->{name} } @{$self->{METHODS}}) {
         return $func[0]->{callback}->(%param);
     }
     Carp::croak("Unknown method: $func_name");
