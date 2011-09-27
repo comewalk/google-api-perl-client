@@ -31,7 +31,13 @@ sub execute {
         $request->content($self->{json_parser}->encode($self->{opt}{body}));
     } elsif ($http_method eq 'GET') {
         my $uri = URI->new($url);
-        $uri->query_form($self->{opt}{body});
+        my %q = (
+            %{$self->{opt}{body}},
+        );
+        if ($arg->{key}) {
+            $q{key} = $arg->{key};
+        }
+        $uri->query_form(\%q);
         $request = HTTP::Request->new($http_method => $uri);
     }
     if ($arg->{auth_driver}) {

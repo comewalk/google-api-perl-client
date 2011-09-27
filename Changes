@@ -1,5 +1,7 @@
 Revision history for Perl extension Google::API::Client
 
+0.03  Tue Sep 27 12:43:25 JST 2011
+        - Added key parameter on execute method for Simple API Access
 0.02  Tue Sep 27 02:43:30 JST 2011
         - Implemented nested resource
 0.01  Wed Jul 13 02:34:42 2011
