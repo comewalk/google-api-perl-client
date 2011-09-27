@@ -1,4 +1,6 @@
 Revision history for Perl extension Google::API::Client
 
+0.02  Tue Sep 27 02:43:30 JST 2011
+        - Implemented nested resource
 0.01  Wed Jul 13 02:34:42 2011
         - original version
