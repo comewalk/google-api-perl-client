@@ -17,8 +17,8 @@ my $service = $client->build('plus', 'v1');
 my $auth_driver = OAuth2::Client->new({
     auth_uri => Google::API::Client->AUTH_URI,
     token_uri => Google::API::Client->TOKEN_URI,
-    client_id => '453973271572.apps.googleusercontent.com',
-    client_secret => 'QT2PvU0MvSVO_k5gHKhjrvf8',
+    client_id => '<YOUR CLIENT ID>',
+    client_secret => '<YOUR CLIENT SECRET>',
     redirect_uri => 'urn:ietf:wg:oauth:2.0:oob',
     auth_doc => $service->{auth_doc},
 });
