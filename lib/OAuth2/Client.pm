@@ -21,7 +21,7 @@ sub new {
 
 sub new_from_client_secrets {
     my $class = shift;
-    my ($file, $param) = @_;
+    my ($file, $auth_doc) = @_;
     open my $fh, '<', $file
         or die "$file not found";
     my $content = do { local $/; <$fh> };
@@ -35,6 +35,7 @@ sub new_from_client_secrets {
         client_id => $json->{$client_type}->{client_id},
         client_secret => $json->{$client_type}->{client_secret},
         redirect_uri => @{$json->{$client_type}->{redirect_uris}}[0],
+        auth_doc => $auth_doc,
     });
 }
 

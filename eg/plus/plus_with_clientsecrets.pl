@@ -15,8 +15,7 @@ my $client = Google::API::Client->new;
 my $service = $client->build('plus', 'v1');
 
 my $file = "$FindBin::Bin/client_secrets.json";
-my $auth_driver = OAuth2::Client->new_from_client_secrets($file);
-$auth_driver->auth_doc($service->{auth_doc});
+my $auth_driver = OAuth2::Client->new_from_client_secrets($file, $service->{auth_doc});
 
 my $dat_file = "$FindBin::Bin/token.dat";
 
