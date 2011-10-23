@@ -75,5 +75,24 @@ TODO: {
     local $TODO = "Add tests for refresh method";
 };
 
+$auth_driver = OAuth2::Client->new({
+    auth_uri => $auth_uri,
+    token_uri => $token_uri,
+    client_id => $client_id,
+    client_secret => $client_secret,
+    redirect_uri => $redirect_uri,
+});
+$auth_driver->auth_doc({
+    oauth2 => {
+        scopes => { 
+            'https://www.googleapis.com/auth/urlshortener'
+                => 'description'
+        },
+    },
+});
+my $auth_doc = $auth_driver->auth_doc;
+my ($key) = keys(%$auth_doc);
+is $key, 'oauth2';
+is $auth_driver->authorize_uri, "$auth_uri?client_id=$client_id&redirect_uri=$redirect_uri&response_type=code&scope=https://www.googleapis.com/auth/urlshortener";
 done_testing;
 __END__

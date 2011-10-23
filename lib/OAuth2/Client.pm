@@ -19,6 +19,25 @@ sub new {
     bless { %$param }, $class;
 }
 
+sub new_from_client_secrets {
+    my $class = shift;
+    my ($file, $param) = @_;
+    open my $fh, '<', $file
+        or die "$file not found";
+    my $content = do { local $/; <$fh> };
+    close $fh;
+    require JSON;
+    my $json = JSON->new->decode($content);
+    my ($client_type) = keys(%$json);
+    $class->new({
+        auth_uri => $json->{$client_type}->{auth_uri},
+        token_uri => $json->{$client_type}->{token_uri},
+        client_id => $json->{$client_type}->{client_id},
+        client_secret => $json->{$client_type}->{client_secret},
+        redirect_uri => @{$json->{$client_type}->{redirect_uris}}[0],
+    });
+}
+
 sub authorize_uri {
     my $self = shift;
     my ($response_type) = @_;
@@ -115,6 +134,15 @@ sub access_token {
     my $self = shift;
     return unless $self->{token_obj};
     return $self->{token_obj}{access_token};
+}
+
+sub auth_doc {
+    my $self = shift;
+    if (@_) {
+        my ($doc) = @_;
+        $self->{auth_doc} = $doc;
+    }
+    return $self->{auth_doc};
 }
 
 sub _new_ua {
