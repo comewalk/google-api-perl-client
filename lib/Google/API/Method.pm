@@ -31,8 +31,9 @@ sub execute {
         $request->content($self->{json_parser}->encode($self->{opt}{body}));
     } elsif ($http_method eq 'GET') {
         my $uri = URI->new($url);
+        my $body = $self->{opt}{body} || {};
         my %q = (
-            %{$self->{opt}{body}},
+            %$body,
         );
         if ($arg->{key}) {
             $q{key} = $arg->{key};
