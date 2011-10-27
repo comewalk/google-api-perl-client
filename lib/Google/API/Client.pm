@@ -2,7 +2,7 @@ package Google::API::Client;
 
 use strict;
 use 5.008_001;
-our $VERSION = '0.03';
+our $VERSION = '0.04';
 
 use Google::API::Method;
 use Google::API::Resource;
@@ -59,7 +59,8 @@ sub _create_resource {
         my $resource_obj;
         if ($document->{resources}{$resource}{resources}) {
             $resource_obj = $self->_create_resource($document->{resources}{$resource}, $base_url, $args);
-        } else {
+        }
+        if ($document->{resources}{$resource}{methods}) {
             $resource_obj = Google::API::Resource->new;
             for my $method (keys %{$document->{resources}{$resource}{methods}}) {
                 $resource_obj->set_attr($method, sub {

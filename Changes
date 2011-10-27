@@ -1,5 +1,7 @@
 Revision history for Perl extension Google::API::Client
 
+0.04  Fri Oct 28 01:50:23 JST 2011
+        - Fixed a bug that G::A::Client didn't have methods if Resource Document has both nested resources and methods like blogger v2.
 0.03  Tue Sep 27 12:43:25 JST 2011
         - Added key parameter on execute method for Simple API Access
 0.02  Tue Sep 27 02:43:30 JST 2011
