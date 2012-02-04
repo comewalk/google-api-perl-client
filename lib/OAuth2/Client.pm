@@ -49,7 +49,7 @@ sub authorize_uri {
     my $authorize_uri = "$self->{auth_uri}?client_id=$self->{client_id}&redirect_uri=$self->{redirect_uri}&response_type=$response_type";
     if ($self->{auth_doc}) {
         my @scopes = keys %{$self->{auth_doc}{oauth2}{scopes}};
-        $authorize_uri .= '&scope=' . join ',', @scopes;
+        $authorize_uri .= '&scope=' . join ' ', @scopes;
     }
     return $authorize_uri;
 }
@@ -63,7 +63,7 @@ sub exchange {
         return unless $self->{$key};
     }
     my @scopes = keys %{$self->{auth_doc}{oauth2}{scopes}};
-    my $scopes = join ',', @scopes;
+    my $scopes = join ' ', @scopes;
     my @param = (
         client_id => $self->{client_id},
         client_secret => $self->{client_secret},
