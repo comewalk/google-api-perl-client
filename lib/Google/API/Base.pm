@@ -22,7 +22,7 @@ sub AUTOLOAD {
     my (%param) = @_;
     my $func_name = $AUTOLOAD;
     $func_name =~ s/^.*:://;
-    return if $func_name eq 'DESTORY';
+    return if $func_name eq 'DESTROY';
     if (my @func = grep { $func_name eq $_->{name} } @{$self->{METHODS}}) {
         return $func[0]->{callback}->(%param);
     }
