@@ -2,7 +2,7 @@ package OAuth2::Client;
 
 use strict;
 use warnings;
-
+use URI;
 
 sub new {
     my $class = shift;
@@ -51,7 +51,7 @@ sub authorize_uri {
         my @scopes = keys %{$self->{auth_doc}{oauth2}{scopes}};
         $authorize_uri .= '&scope=' . join ' ', @scopes;
     }
-    return $authorize_uri;
+    return URI->new($authorize_uri)->as_string;
 }
 
 sub exchange {
