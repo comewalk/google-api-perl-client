@@ -12,8 +12,7 @@ sub new {
 sub set_attr {
     my $self = shift;
     my ($name, $callback) = @_;
-    push @{$self->{METHODS}}, { name => $name, callback => $callback };
-
+    $self->{METHODS}{$name} = $callback;
 }
 
 our $AUTOLOAD;
@@ -23,8 +22,8 @@ sub AUTOLOAD {
     my $func_name = $AUTOLOAD;
     $func_name =~ s/^.*:://;
     return if $func_name eq 'DESTROY';
-    if (my @func = grep { $func_name eq $_->{name} } @{$self->{METHODS}}) {
-        return $func[0]->{callback}->(%param);
+    if (exists $self->{METHODS}{$func_name}) {
+	return $self->{METHODS}{$func_name}->(%param);
     }
     Carp::croak("Unknown method: $func_name");
 }
