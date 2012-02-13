@@ -2,7 +2,7 @@ package Google::API::Client;
 
 use strict;
 use 5.008_001;
-our $VERSION = '0.04';
+our $VERSION = '0.05';
 
 use Google::API::Method;
 use Google::API::Resource;
@@ -141,6 +141,12 @@ Google::API::Client is a client for Google APIs Discovery Service. You make usin
 =head1 AUTHOR
 
 Takatsugu Shigeta E<lt>shigeta@cpan.orgE<gt>
+
+=head1 CONTRIBUTORS
+
+Yusuke Ueno (uechoco)
+
+Gustavo Chaves (gnustavo)
 
 =head1 COPYRIGHT
 

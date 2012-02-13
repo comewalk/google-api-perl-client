@@ -1,5 +1,8 @@
 Revision history for Perl extension Google::API::Client
 
+0.05  Tue Feb 14 01:01:42 JST 2012
+        - Fixed issues of URL delimiter at OAuth2::Client #1 #3 (uechoco, gnustavo)
+        - Performance improvement for method lookup #2 (gnustavo)
 0.04  Fri Oct 28 01:50:23 JST 2011
         - Fixed a bug that G::A::Client didn't have methods if Resource Document has both nested resources and methods like blogger v2.
 0.03  Tue Sep 27 12:43:25 JST 2011
