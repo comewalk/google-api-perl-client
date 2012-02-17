@@ -8,7 +8,7 @@ use FindBin;
 use Google::API::Client;
 use OAuth2::Client;
 
-use lib 'eg/adsense/lib';
+use lib 'eg/lib';
 use Sample::Utils qw/get_or_restore_token store_token/;
 
 use constant MAX_PAGE_SIZE => 50;
@@ -17,7 +17,7 @@ use constant MAX_PAGE_SIZE => 50;
 my $client = Google::API::Client->new;
 my $service = $client->build('adsense', 'v1');
 
-my $file = "$FindBin::Bin/client_secrets.json";
+my $file = "$FindBin::Bin/../client_secrets.json";
 my $auth_driver = OAuth2::Client->new_from_client_secrets($file, $service->{auth_doc});
 
 my $dat_file = "$FindBin::Bin/token.dat";
