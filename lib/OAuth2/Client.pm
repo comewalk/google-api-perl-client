@@ -185,6 +185,8 @@ OAuth2::Client is a simple client for OAuth2. This module generates an URL for a
 
 =item new
 
+=item new_from_client_secrets
+
 =item authorize_uri
 
 =item exchange
@@ -196,6 +198,8 @@ OAuth2::Client is a simple client for OAuth2. This module generates an URL for a
 =item token_type
 
 =item access_token
+
+=item auth_doc
 
 =back
 

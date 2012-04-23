@@ -1,27 +1,41 @@
-This is Perl module Google::API::Client.
+NAME
+    Google::API::Client - A client for Google APIs Discovery Service
 
-INSTALLATION
+SYNOPSIS
+      use Google::API::Client;
 
-Google::API::Client installation is straightforward. (Although this module is not in cpan so far,) If your CPAN shell is set up,
-you should just be able to do
+      my $client = Google::API::Client->new;
+      my $service = $client->build('urlshortener', 'v1');
 
-    % cpan Google::API::Client 
+      # Get shortened URL 
+      my $body = {
+          'longUrl' => 'http://code.google.com/apis/urlshortener/',
+      };
+      my $result = $url->insert(body => $body)->execute;
+      $result->{id}; # shortened URL
 
-Download it, unpack it, then build it as per the usual:
+DESCRIPTION
+    Google::API::Client is a client for Google APIs Discovery Service. You
+    make using Google APIs easy.
 
-    % perl Makefile.PL
-    % make && make test
+METHODS
+    new
+    build
+    build_from_document
 
-Then install it:
+AUTHOR
+    Takatsugu Shigeta <shigeta@cpan.org>
 
-    % make install
+CONTRIBUTORS
+    Yusuke Ueno (uechoco)
 
-DOCUMENTATION
+    Gustavo Chaves (gnustavo)
 
-Google::API::Client documentation is available as in POD. So you can do:
+COPYRIGHT
+    Copyright 2011- Takatsugu Shigeta
 
-    % perldoc Google::API::Client
+LICENSE
+    This library is free software; you can redistribute it and/or modify it
+    under the same terms as Perl itself.
 
-to read the documentation online with your favorite pager.
-
-Takatsugu Shigeta
+SEE ALSO
