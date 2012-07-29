@@ -20,7 +20,11 @@ sub execute {
     my $self = shift;
     my ($arg) = @_;
     my $url = $self->{base_url} . $self->{doc}{path};
+    my $url_org = $url;
     $url =~ s/{([^}]+)}/$self->{opt}{body}{$1}/g;
+    while ( $url_org =~ /{([^}]+)}/g ) {
+        delete( $self->{opt}{body}{$1} );
+    }
     my $http_method = uc($self->{doc}{httpMethod});
     my $request;
     if ($http_method eq 'POST' ||
