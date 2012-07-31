@@ -6,6 +6,7 @@ use warnings;
 use Encode;
 use HTTP::Request;
 use URI;
+use URI::Escape qw/uri_escape/;
 
 sub new {
     my $class = shift;
@@ -20,7 +21,7 @@ sub execute {
     my $self = shift;
     my ($arg) = @_;
     my $url = $self->{base_url} . $self->{doc}{path};
-    $url =~ s/{([^}]+)}/$self->{opt}{body}{$1}/g;
+    $url =~ s/{([^}]+)}/uri_escape(delete($self->{opt}{body}{$1}))/eg;
     my $http_method = uc($self->{doc}{httpMethod});
     my $request;
     if ($http_method eq 'POST' ||
