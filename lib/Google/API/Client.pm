@@ -2,7 +2,7 @@ package Google::API::Client;
 
 use strict;
 use 5.008_001;
-our $VERSION = '0.06';
+our $VERSION = '0.07';
 
 use Google::API::Method;
 use Google::API::Resource;

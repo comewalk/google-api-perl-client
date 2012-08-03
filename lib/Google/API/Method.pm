@@ -18,22 +18,35 @@ sub new {
 }
 
 sub execute {
-    my $self = shift;
-    my ($arg) = @_;
+    my ($self, $arg) = @_;
     my $url = $self->{base_url} . $self->{doc}{path};
-    $url =~ s/{([^}]+)}/uri_escape(delete($self->{opt}{body}{$1}))/eg;
     my $http_method = uc($self->{doc}{httpMethod});
+    my %required_param;
+    for my $p (@{$self->{doc}{parameterOrder}}) {
+        $required_param{$p} = delete $self->{opt}{$p};
+        if ($self->{opt}{body} && $self->{opt}{body}{$p}) {
+            $required_param{$p} = delete $self->{opt}{body}{$p};
+        }
+    }
+    $url =~ s/{([^}]+)}/uri_escape(delete $required_param{$1})/eg;
+    my $uri = URI->new($url);
     my $request;
     if ($http_method eq 'POST' ||
         $http_method eq 'PUT' ||
-        $http_method eq 'PATCH') {
-        $request = HTTP::Request->new($http_method => $url);
-        $request->content_type('application/json');
-        $request->content($self->{json_parser}->encode($self->{opt}{body}));
+        $http_method eq 'PATCH' ||
+        $http_method eq 'DELETE') {
+        $uri->query_form(\%required_param);
+        $request = HTTP::Request->new($http_method => $uri);
+        if ($self->{opt}{body}) {
+            $request->content_type('application/json');
+            $request->content($self->{json_parser}->encode($self->{opt}{body}));
+        } else {
+            $request->content_length(0);
+        }
     } elsif ($http_method eq 'GET') {
-        my $uri = URI->new($url);
         my $body = $self->{opt}{body} || {};
         my %q = (
+            %required_param,
             %$body,
         );
         if ($arg->{key}) {
@@ -57,11 +70,27 @@ sub execute {
                 $arg->{auth_driver}->access_token);
         $response = $self->{ua}->request($request);
     }
-    die $response->status_line unless $response->is_success;
+    unless ($response->is_success) {
+        $self->_die_with_error($response);
+    }
+    if ($response->code == 204) {
+        return;
+    }
     return $response->header('content-type') =~ m!^application/json!
            ? $self->{json_parser}->decode(decode_utf8($response->content))
            : $response->content
            ;
+}
+
+sub _die_with_error {
+    my ($self, $response) = @_;
+    my $err_str = $response->status_line;
+    if ($response->content
+        && $response->header('content-type') =~ m!^application/json!) {
+        my $content = $self->{json_parser}->decode(decode_utf8($response->content));
+        $err_str = "$err_str: $content->{error}{message}";
+    }
+    die $err_str;
 }
 
 1;
