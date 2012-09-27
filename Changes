@@ -1,5 +1,8 @@
 Revision history for Perl extension Google::API::Client
 
+0.08  Thu Sep 27 14:40:05 JST 2012
+        - Fixed an issue #7
+
 0.07  Fri Aug  3 23:25:39 JST 2012 
         - Fixed an issue #6
         - Added calendar events samples
