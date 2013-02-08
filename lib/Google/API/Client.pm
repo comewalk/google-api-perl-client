@@ -2,7 +2,7 @@ package Google::API::Client;
 
 use strict;
 use 5.008_001;
-our $VERSION = '0.08';
+our $VERSION = '0.09';
 
 use Google::API::Method;
 use Google::API::Resource;
@@ -149,6 +149,8 @@ Takatsugu Shigeta E<lt>shigeta@cpan.orgE<gt>
 Yusuke Ueno (uechoco)
 
 Gustavo Chaves (gnustavo)
+
+Hatsuhito UENO (uehatsu)
 
 =head1 COPYRIGHT
 
