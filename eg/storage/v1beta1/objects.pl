@@ -38,10 +38,11 @@ unless ($response->is_success) {
 }
 
 # retrieve files
-my $projectId = 453973271572;
+my $projectId = '<YOUR PROJECT ID>';
 my $data = $response->content;
 my $buckets = $service->buckets->list(body => { projectId => $projectId })->execute({ auth_driver => $auth_driver });
 for my $bucket (@{$buckets->{items}}) {
+    say $bucket->{id};
     my $res = $service->objects->insert(
         bucket => $bucket->{id},
         name => $basename,
@@ -53,7 +54,7 @@ for my $bucket (@{$buckets->{items}}) {
     )->execute({ auth_driver => $auth_driver });
     my $objects = $service->objects->list(body => { bucket => $bucket->{id} })->execute({ auth_driver => $auth_driver });
     for my $object (@{$objects->{items}}) {
-        say Dumper($object->{name});
+        say ' + ' . $object->{name};
     }
 }
 
