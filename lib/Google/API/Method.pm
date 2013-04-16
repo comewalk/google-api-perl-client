@@ -19,7 +19,6 @@ sub new {
 
 sub execute {
     my ($self, $arg) = @_;
-    my $url = $self->{base_url} . $self->{doc}{path};
     my $http_method = uc($self->{doc}{httpMethod});
     my %required_param;
     for my $p (@{$self->{doc}{parameterOrder}}) {
@@ -28,19 +27,40 @@ sub execute {
             $required_param{$p} = delete $self->{opt}{body}{$p};
         }
     }
-    $url =~ s/{([^}]+)}/uri_escape(delete $required_param{$1})/eg;
-    my $uri = URI->new($url);
     my $request;
     if ($http_method eq 'POST' ||
         $http_method eq 'PUT' ||
         $http_method eq 'PATCH' ||
         $http_method eq 'DELETE') {
-        $uri->query_form(\%required_param);
-        $request = HTTP::Request->new($http_method => $uri);
-        if ($self->{opt}{body}) {
+        if (my $media = $self->{opt}{media_body}) {
+            my ($path, $upload_type);
+            unless ($self->{opt}{body}) {
+                $upload_type = 'media';
+                $path = $self->{doc}{mediaUpload}{protocols}{simple}{path};
+            } else {
+                # TODO implement multipart/related 
+            }
+            $path =~ s/{([^}]+)}/uri_escape(delete $required_param{$1})/eg;
+            my $uri = URI->new_abs($path, $self->{base_url});
+            $uri->query_form({
+                %required_param,
+                uploadType => $upload_type,
+                name => $self->{opt}{name},
+            });
+            $request = HTTP::Request->new($http_method => $uri);
+            $request->content_type($media->{content_type});
+            $request->content_length($media->{length});
+            $request->content($media->{bytes});
+        } elsif ($self->{opt}{body}) {
+            my $uri = URI->new($self->{base_url} . $self->{doc}{path});
+            $uri->query_form(\%required_param);
+            $request = HTTP::Request->new($http_method => $uri);
             $request->content_type('application/json');
             $request->content($self->{json_parser}->encode($self->{opt}{body}));
         } else {
+            my $uri = URI->new($self->{base_url} . $self->{doc}{path});
+            $uri->query_form(\%required_param);
+            $request = HTTP::Request->new($http_method => $uri);
             $request->content_length(0);
         }
     } elsif ($http_method eq 'GET') {
@@ -52,6 +72,7 @@ sub execute {
         if ($arg->{key}) {
             $q{key} = $arg->{key};
         }
+        my $uri = URI->new($self->{base_url} . $self->{doc}{path});
         $uri->query_form(\%q);
         $request = HTTP::Request->new($http_method => $uri);
     }
