@@ -4,6 +4,7 @@ use strict;
 use warnings;
 
 use Encode;
+use Google::API::MediaFileUpload;
 use HTTP::Request;
 use URI;
 use URI::Escape qw/uri_escape/;
@@ -45,18 +46,18 @@ sub execute {
             $uri->query_form({
                 %required_param,
                 uploadType => $upload_type,
-                name => $self->{opt}{name},
+                name => $media->basename,
             });
             $request = HTTP::Request->new($http_method => $uri);
-            $request->content_type($media->{content_type});
-            $request->content_length($media->{length});
-            $request->content($media->{bytes});
-        } elsif ($self->{opt}{body}) {
+            $request->content_type($media->mime_type);
+            $request->content_length($media->length);
+            $request->content($media->bytes);
+        } elsif (my $body = $self->{opt}{body}) {
             my $uri = URI->new($self->{base_url} . $self->{doc}{path});
             $uri->query_form(\%required_param);
             $request = HTTP::Request->new($http_method => $uri);
             $request->content_type('application/json');
-            $request->content($self->{json_parser}->encode($self->{opt}{body}));
+            $request->content($self->{json_parser}->encode($body));
         } else {
             my $uri = URI->new($self->{base_url} . $self->{doc}{path});
             $uri->query_form(\%required_param);

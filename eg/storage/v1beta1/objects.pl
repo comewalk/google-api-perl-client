@@ -11,6 +11,7 @@ use LWP::UserAgent;
 use MIME::Base64;
 
 use Google::API::Client;
+use Google::API::MediaFileUpload;
 use OAuth2::Client;
 
 use lib 'eg/lib';
@@ -29,28 +30,21 @@ if ($access_token) {
     store_token($dat_file, $auth_driver);
 }
 
-# download image
+
 my $basename = 'cloud_storage-32.png';
-my $ua = LWP::UserAgent->new;
-my $response = $ua->get('https://www.google.com/images/icons/product/cloud_storage-32.png');
-unless ($response->is_success) {
-  die "could not download a file";
-}
+my $image = Google::API::MediaFileUpload->new({
+    filename => "$FindBin::Bin/$basename", 
+});
 
 # retrieve files
 my $projectId = '<YOUR PROJECT ID>';
-my $data = $response->content;
 my $buckets = $service->buckets->list(body => { projectId => $projectId })->execute({ auth_driver => $auth_driver });
 for my $bucket (@{$buckets->{items}}) {
     say $bucket->{id};
     my $res = $service->objects->insert(
         bucket => $bucket->{id},
         name => $basename,
-        media_body => {
-            bytes => $data,
-            length => length($data),
-            content_type => $response->content_type,
-        },
+        media_body => $image,
     )->execute({ auth_driver => $auth_driver });
     my $objects = $service->objects->list(body => { bucket => $bucket->{id} })->execute({ auth_driver => $auth_driver });
     for my $object (@{$objects->{items}}) {
