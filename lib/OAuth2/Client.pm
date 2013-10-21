@@ -54,6 +54,9 @@ sub authorize_uri {
     if ($self->{access_type}){
         $authorize_uri .= "&access_type=$self->{access_type}";
     }
+    if ($self->{approval_prompt}){
+        $authorize_uri .= "&approval_prompt=$self->{approval_prompt}";
+    }
     return URI->new($authorize_uri)->as_string;
 }
 
