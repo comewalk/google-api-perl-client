@@ -51,6 +51,9 @@ sub authorize_uri {
         my @scopes = keys %{$self->{auth_doc}{oauth2}{scopes}};
         $authorize_uri .= '&scope=' . join ' ', @scopes;
     }
+    if ($self->{access_type}){
+        $authorize_uri .= "&access_type=$self->{access_type}";
+    }
     return URI->new($authorize_uri)->as_string;
 }
 
