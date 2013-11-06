@@ -1,0 +1,57 @@
+{
+   "abstract" : "A client for Google APIs Discovery Service",
+   "author" : [
+      "Takatsugu Shigeta <shigeta@cpan.org>"
+   ],
+   "dynamic_config" : 0,
+   "generated_by" : "Dist::Milla version v1.0.4, Dist::Zilla version 5.005, CPAN::Meta::Converter version 2.132830",
+   "license" : [
+      "perl_5"
+   ],
+   "meta-spec" : {
+      "url" : "http://search.cpan.org/perldoc?CPAN::Meta::Spec",
+      "version" : "2"
+   },
+   "name" : "Google-API-Client",
+   "no_index" : {
+      "directory" : [
+         "t",
+         "xt",
+         "inc",
+         "share",
+         "eg",
+         "examples"
+      ]
+   },
+   "prereqs" : {
+      "configure" : {
+         "requires" : {
+            "Module::Build::Tiny" : "0.030"
+         }
+      },
+      "develop" : {
+         "requires" : {
+            "Test::Pod" : "1.41"
+         }
+      }
+   },
+   "release_status" : "stable",
+   "resources" : {
+      "bugtracker" : {
+         "web" : "https://github.com/comewalk/google-api-perl-client/issues"
+      },
+      "homepage" : "https://github.com/comewalk/google-api-perl-client",
+      "repository" : {
+         "type" : "git",
+         "url" : "https://github.com/comewalk/google-api-perl-client.git",
+         "web" : "https://github.com/comewalk/google-api-perl-client"
+      }
+   },
+   "version" : "0.09",
+   "x_contributors" : [
+      "Gustavo Chaves <gustavo@gnustavo.com>",
+      "Takatsugu Shigeta <shigeta@cpan.org>",
+      "Yusuke Ueno <uechoco@gmail.com>",
+   ]
+}
+

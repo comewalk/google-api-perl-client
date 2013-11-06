@@ -1,5 +1,8 @@
 Revision history for Perl extension Google::API::Client
 
+{{$NEXT}}
+        - Start using Dist::Milla #8
+
 0.09  Fri Feb  8 22:13:43 JST 2013
         - Fixed an issue #4
 
