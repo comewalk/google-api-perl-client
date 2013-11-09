@@ -6,10 +6,10 @@ use warnings;
 use Test::More;
 use Test::TCP;
 
-use OAuth2::Client;
+use Google::API::OAuth2::Client;
 
 
-my $auth_driver = OAuth2::Client->new({
+my $auth_driver = Google::API::OAuth2::Client->new({
 });
 is undef, $auth_driver;
 
@@ -19,17 +19,17 @@ my $client_id = '40B88F40D2C354C69E0ADA2B3EB8B816';
 my $client_secret = 'WHI6TPJLTKEFH19KVAXRDQ';
 my $redirect_uri = 'urn:ietf:wg:oauth:2.0:oob';
 
-$auth_driver = OAuth2::Client->new({
+$auth_driver = Google::API::OAuth2::Client->new({
     auth_uri => $auth_uri,
     token_uri => $token_uri,
     client_id => $client_id,
     client_secret => $client_secret,
     redirect_uri => $redirect_uri,
 });
-is ref($auth_driver), 'OAuth2::Client';
+is ref($auth_driver), 'Google::API::OAuth2::Client';
 is $auth_driver->authorize_uri, "$auth_uri?client_id=$client_id&redirect_uri=$redirect_uri&response_type=code";
 
-$auth_driver = OAuth2::Client->new({
+$auth_driver = Google::API::OAuth2::Client->new({
     auth_uri => $auth_uri,
     token_uri => $token_uri,
     client_id => $client_id,
@@ -38,7 +38,7 @@ $auth_driver = OAuth2::Client->new({
 });
 is $auth_driver->authorize_uri('token'), "$auth_uri?client_id=$client_id&redirect_uri=$redirect_uri&response_type=token";
 
-$auth_driver = OAuth2::Client->new({
+$auth_driver = Google::API::OAuth2::Client->new({
     auth_uri => $auth_uri,
     token_uri => $token_uri,
     client_id => $client_id,
@@ -75,7 +75,7 @@ TODO: {
     local $TODO = "Add tests for refresh method";
 };
 
-$auth_driver = OAuth2::Client->new({
+$auth_driver = Google::API::OAuth2::Client->new({
     auth_uri => $auth_uri,
     token_uri => $token_uri,
     client_id => $client_id,

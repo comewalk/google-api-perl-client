@@ -1,4 +1,4 @@
-package OAuth2::Client;
+package Google::API::OAuth2::Client;
 
 use strict;
 use warnings;
@@ -169,15 +169,15 @@ __END__
 
 =head1 NAME
 
-OAuth2::Client - A simple client for OAuth2
+Google::API::OAuth2::Client - A simple client for OAuth2
 
 =head1 SYNOPSIS
 
-  use OAuth2::Client;
+  use Google::API::OAuth2::Client;
 
 =head1 DESCRIPTION
 
-OAuth2::Client is a simple client for OAuth2. This module generates an URL for authorization, calls token URI with authorized code and refresh access token.
+Google::API::OAuth2::Client is a simple client for OAuth2. This module generates an URL for authorization, calls token URI with authorized code and refresh access token.
 
 =head1 METHODS
 
