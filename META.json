@@ -47,11 +47,12 @@
          "web" : "https://github.com/comewalk/google-api-perl-client"
       }
    },
-   "version" : "0.09",
+   "version" : "0.10",
    "x_contributors" : [
       "Gustavo Chaves <gustavo@gnustavo.com>",
-      "Takatsugu Shigeta <shigeta@cpan.org>",
+      "Takatsugu Shigeta <tshigeta@user200.sixapart.jp>",
       "Yusuke Ueno <uechoco@gmail.com>",
+      "shigeta <shigeta@typhoon.(none)>"
    ]
 }
 
