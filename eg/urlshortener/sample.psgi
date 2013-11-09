@@ -7,7 +7,7 @@ use Plack::Builder;
 use Plack::Request;
 
 use Google::API::Client;
-use OAuth2::Client;
+use Google::API::OAuth2::Client;
 
 
 my $client = Google::API::Client->new;
@@ -18,7 +18,7 @@ my $app = sub {
     my $request = Plack::Request->new($env);
 
     my $redirect_uri = sprintf qq(http://localhost:%s/callback), $request->port;
-    my $auth_driver = OAuth2::Client->new({
+    my $auth_driver = Google::API::OAuth2::Client->new({
         auth_uri => Google::API::Client->AUTH_URI,
         token_uri => Google::API::Client->TOKEN_URI,
         client_id => '<YOUR CLIENT ID>',
@@ -84,7 +84,7 @@ HTML
 };
 
 builder {
-    enable 'Debug';
+#    enable 'Debug';
     $app;
 };
 

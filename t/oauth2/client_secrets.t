@@ -1,10 +1,10 @@
 use Test::More;
 use FindBin;
-use OAuth2::Client;
+use Google::API::OAuth2::Client;
 
 
 my $file = "$FindBin::Bin/client_secrets.json";
-my $auth_driver = OAuth2::Client->new_from_client_secrets($file);
+my $auth_driver = Google::API::OAuth2::Client->new_from_client_secrets($file);
 is $auth_driver->{auth_uri}, 'https://accounts.google.com/o/oauth2/auth';
 like $auth_driver->authorize_uri, qr{https://accounts.google.com/o/oauth2/auth};
 
@@ -16,7 +16,7 @@ my $auth_doc = {
         },
     },
 };
-my $auth_driver = OAuth2::Client->new_from_client_secrets($file, $auth_doc);
+my $auth_driver = Google::API::OAuth2::Client->new_from_client_secrets($file, $auth_doc);
 like $auth_driver->authorize_uri, qr{scope=https://www.googleapis.com/auth/urlshortener};
 
 done_testing;
