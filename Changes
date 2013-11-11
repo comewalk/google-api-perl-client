@@ -2,6 +2,9 @@ Revision history for Perl extension Google::API::Client
 
 {{$NEXT}}
 
+0.11  2013-11-12 01:57:03 JST
+        - Update dependencies #11
+
 0.10  2013-11-09 19:00:51 JST
         - Start using Dist::Milla #8
         - Important changes: Rename OAuth2::Client to Google::API::OAuth2::Client #9
