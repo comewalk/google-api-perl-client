@@ -33,6 +33,19 @@
          "requires" : {
             "Test::Pod" : "1.41"
          }
+      },
+      "runtime" : {
+         "requires" : {
+            "HTTP::Request" : "0",
+            "JSON" : "0",
+            "URI" : "0",
+            "URI::Escape" : "0"
+         }
+      },
+      "test" : {
+         "requires" : {
+            "Test::TCP" : "0"
+         }
       }
    },
    "release_status" : "stable",
