@@ -38,6 +38,7 @@
          "requires" : {
             "HTTP::Request" : "0",
             "JSON" : "0",
+            "LWP::Protocol::https" : "0",
             "URI" : "0",
             "URI::Escape" : "0"
          }
@@ -60,7 +61,7 @@
          "web" : "https://github.com/comewalk/google-api-perl-client"
       }
    },
-   "version" : "0.11",
+   "version" : "0.12",
    "x_contributors" : [
       "Gustavo Chaves <gustavo@gnustavo.com>",
       "Takatsugu Shigeta <tshigeta@user200.sixapart.jp>",

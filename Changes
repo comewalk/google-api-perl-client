@@ -1,6 +1,8 @@
 Revision history for Perl extension Google::API::Client
 
 {{$NEXT}}
+
+0.12  2013-11-12 22:48:25 JST
         - Add .travis.yml
 
 0.11  2013-11-12 01:57:03 JST
