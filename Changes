@@ -1,6 +1,7 @@
 Revision history for Perl extension Google::API::Client
 
 {{$NEXT}}
+        - Add approve prompt and offline #12 (Thanks, chylli and finn)
 
 0.12  2013-11-12 22:48:25 JST
         - Add .travis.yml
