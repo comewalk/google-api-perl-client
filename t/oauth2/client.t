@@ -37,12 +37,10 @@ $auth_driver = Google::API::OAuth2::Client->new({
     redirect_uri => $redirect_uri,
     access_type => 'offline',
 });
-is ref($auth_driver), 'OAuth2::Client';
+is ref($auth_driver), 'Google::API::OAuth2::Client';
 is $auth_driver->authorize_uri, "$auth_uri?client_id=$client_id&redirect_uri=$redirect_uri&response_type=code&access_type=offline";
-diag($auth_driver->authorize_uri);
 
-
-$auth_driver = OAuth2::Client->new({
+$auth_driver = Google::API::OAuth2::Client->new({
     auth_uri => $auth_uri,
     token_uri => $token_uri,
     client_id => $client_id,
