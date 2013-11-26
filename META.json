@@ -61,8 +61,10 @@
          "web" : "https://github.com/comewalk/google-api-perl-client"
       }
    },
-   "version" : "0.12",
+   "version" : "0.13",
    "x_contributors" : [
+      "Chylli <chylli.email@gmail.com>",
+      "Chylli <chylli@163.com>",
       "Gustavo Chaves <gustavo@gnustavo.com>",
       "Takatsugu Shigeta <tshigeta@user200.sixapart.jp>",
       "Yusuke Ueno <uechoco@gmail.com>",

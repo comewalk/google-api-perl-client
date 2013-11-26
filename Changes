@@ -1,6 +1,8 @@
 Revision history for Perl extension Google::API::Client
 
 {{$NEXT}}
+
+0.13  2013-11-27 00:59:57 JST
         - Add approve prompt and offline #12 (Thanks, chylli and finn)
 
 0.12  2013-11-12 22:48:25 JST
