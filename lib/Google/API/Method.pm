@@ -74,7 +74,7 @@ sub execute {
         $self->_die_with_error($response);
     }
     if ($response->code == 204) {
-        return;
+        return 1;
     }
     return $response->header('content-type') =~ m!^application/json!
            ? $self->{json_parser}->decode(decode_utf8($response->content))
