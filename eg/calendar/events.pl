@@ -108,7 +108,7 @@ say $patched_event->{updated};
 
 # Delete an event
 say '=== Delete an event ===';
-my $deleted_event = $service->events->delete(
+$service->events->delete(
     calendarId => $calendar_id,
     eventId    => $got_event->{id},
 )->execute({ auth_driver => $auth_driver });
