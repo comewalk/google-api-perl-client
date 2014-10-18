@@ -7,3 +7,4 @@ MYMETA.*
 /.prove
 eg/*/token.dat
 *~
+local/
