@@ -42,6 +42,8 @@ chylli
 
 Richie Foreman <richieforeman@google.com> (richieforeman)
 
+ljanvier
+
 # COPYRIGHT
 
 Copyright 2011- Takatsugu Shigeta

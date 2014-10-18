@@ -154,6 +154,10 @@ Hatsuhito UENO (uehatsu)
 
 chylli
 
+Richie Foreman <richieforeman@google.com> (richieforeman)
+
+ljanvier
+
 =head1 COPYRIGHT
 
 Copyright 2011- Takatsugu Shigeta
