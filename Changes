@@ -2,6 +2,11 @@ Revision history for Perl extension Google::API::Client
 
 {{$NEXT}}
 
+0.14  2014-10-18 03:08:30 PDT
+        - allow no redirect_uri to support cross-client exchange request #14 (Thanks, razsh)
+        - Add SignedJWT support and Reseller API sample to Perl Client Library. #15 (Thanks, richieforeman)
+        - calendar event deletion #16 (Thanks, ljanvier)
+
 0.13  2013-11-27 00:59:57 JST
         - Add approve prompt and offline #12 (Thanks, chylli and finn)
 

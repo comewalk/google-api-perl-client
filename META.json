@@ -4,7 +4,7 @@
       "Takatsugu Shigeta <shigeta@cpan.org>"
    ],
    "dynamic_config" : 0,
-   "generated_by" : "Dist::Milla version v1.0.4, Dist::Zilla version 5.005, CPAN::Meta::Converter version 2.132830",
+   "generated_by" : "Dist::Milla version v1.0.8, Dist::Zilla version 5.020, CPAN::Meta::Converter version 2.142690",
    "license" : [
       "perl_5"
    ],
@@ -26,11 +26,12 @@
    "prereqs" : {
       "configure" : {
          "requires" : {
-            "Module::Build::Tiny" : "0.030"
+            "Module::Build::Tiny" : "0.038"
          }
       },
       "develop" : {
          "requires" : {
+            "Dist::Milla" : "v1.0.8",
             "Test::Pod" : "1.41"
          }
       },
@@ -38,6 +39,7 @@
          "requires" : {
             "HTTP::Request" : "0",
             "JSON" : "0",
+            "JSON::WebToken" : "0",
             "LWP::Protocol::https" : "0",
             "URI" : "0",
             "URI::Escape" : "0"
@@ -61,11 +63,15 @@
          "web" : "https://github.com/comewalk/google-api-perl-client"
       }
    },
-   "version" : "0.13",
+   "version" : "0.14",
    "x_contributors" : [
       "Chylli <chylli.email@gmail.com>",
       "Chylli <chylli@163.com>",
       "Gustavo Chaves <gustavo@gnustavo.com>",
+      "Ludwin Janvier <lud.janvier@gmail.com>",
+      "Raz Shlomovich <raz.shlomovich@buzzfeed.com>",
+      "Richie Foreman <richie.foreman@gmail.com>",
+      "Takatsugu Shigeta <shigeta@cpan.org>",
       "Takatsugu Shigeta <tshigeta@user200.sixapart.jp>",
       "Yusuke Ueno <uechoco@gmail.com>",
       "shigeta <shigeta@typhoon.(none)>"
