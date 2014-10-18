@@ -7,7 +7,7 @@ use URI;
 sub new {
     my $class = shift;
     my ($param) = @_;
-    for my $key (qw/auth_uri token_uri client_id client_secret redirect_uri/) {
+    for my $key (qw/auth_uri token_uri client_id client_secret/) {
         return unless $param->{$key};
     }
     unless (defined $param->{ua}) {
@@ -65,7 +65,7 @@ sub exchange {
     my ($code) = @_;
     return unless $code;
     return unless $self->{auth_doc};
-    for my $key (qw/client_id client_secret redirect_uri/) {
+    for my $key (qw/client_id client_secret/) {
         return unless $self->{$key};
     }
     my @scopes = keys %{$self->{auth_doc}{oauth2}{scopes}};
