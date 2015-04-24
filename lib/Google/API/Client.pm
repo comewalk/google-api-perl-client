@@ -44,9 +44,8 @@ sub build {
 sub build_from_document {
     my $self = shift;
     my ($document, $url, $args) = @_;
-    my $base = $document->{basePath};
-    my $base_url = URI->new($url);
-    $base_url = URI->new_abs($base, $base_url);
+    my $base = $document->{rootUrl}.$document->{servicePath};
+    my $base_url = URI->new($base);
     my $resource = $self->_create_resource($document, $base_url, $args); 
     return $resource;
 }
@@ -136,7 +135,16 @@ Google::API::Client is a client for Google APIs Discovery Service. You make usin
 
 =item build
 
+Construct a resource for interacting with an API. The service name and version
+are passed to specify the build function to retrieve the appropriate discovery
+document from the server. Calls C<build_from_document()> with the downloaded file.
+
 =item build_from_document
+
+Same as the C<build()> function, but the document is to be passed I<locally>
+instead of being downloaded. The C<discovery_service_url> is a deprecated 
+argument. Instead, the URL is constructed by combining the C<rootUrl> and 
+the C<servicePath>.
 
 =back
 

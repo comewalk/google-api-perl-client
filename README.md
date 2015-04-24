@@ -46,6 +46,8 @@ ljanvier
 
 razsh
 
+Sudipta Chatterjee (sudiptachatterjee)
+
 # COPYRIGHT
 
 Copyright 2011- Takatsugu Shigeta

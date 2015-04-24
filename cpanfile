@@ -7,3 +7,4 @@ requires 'LWP::Protocol::https';
 on test => sub {
     requires 'Test::TCP';
 };
+requires Mozilla::CA;
