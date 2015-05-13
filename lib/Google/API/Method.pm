@@ -24,9 +24,6 @@ sub execute {
     my %required_param;
     for my $p (@{$self->{doc}{parameterOrder}}) {
         $required_param{$p} = delete $self->{opt}{$p};
-        if ($self->{opt}{body} && $self->{opt}{body}{$p}) {
-            $required_param{$p} = delete $self->{opt}{body}{$p};
-        }
     }
     $url =~ s/{([^}]+)}/uri_escape(delete $required_param{$1})/eg;
     my $uri = URI->new($url);
