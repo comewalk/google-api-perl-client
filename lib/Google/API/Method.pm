@@ -37,7 +37,9 @@ sub execute {
         $http_method eq 'DELETE') {
         $uri->query_form(\%required_param);
         $request = HTTP::Request->new($http_method => $uri);
-        if ($self->{opt}{body}) {
+        # Some API's (ie: admin/directoryv1/groups/delete) require requests 
+        # with an empty body section to be explicitly zero length.
+        if (%{$self->{opt}{body}}) {
             $request->content_type('application/json');
             $request->content($self->{json_parser}->encode($self->{opt}{body}));
         } else {
