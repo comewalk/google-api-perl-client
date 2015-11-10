@@ -1,5 +1,6 @@
 requires 'URI';
 requires 'URI::Escape';
+requires 'URI::Template';
 requires 'HTTP::Request';
 requires 'JSON';
 requires 'JSON::WebToken';

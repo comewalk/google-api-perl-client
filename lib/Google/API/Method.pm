@@ -7,6 +7,7 @@ use Encode;
 use HTTP::Request;
 use URI;
 use URI::Escape qw/uri_escape/;
+use URI::Template;
 
 sub new {
     my $class = shift;
@@ -28,7 +29,12 @@ sub execute {
             $required_param{$p} = delete $self->{opt}{body}{$p};
         }
     }
-    $url =~ s/{([^}]+)}/uri_escape(delete $required_param{$1})/eg;
+    my $template = URI::Template->new($url);
+    $url = $template->process( %required_param );
+    # remove from required_param all variables in the url template (the path
+    # variables)
+    delete @required_param{$template->variables()};
+
     my $uri = URI->new($url);
     my $request;
     if ($http_method eq 'POST' ||
@@ -39,7 +45,7 @@ sub execute {
         $request = HTTP::Request->new($http_method => $uri);
         # Some API's (ie: admin/directoryv1/groups/delete) require requests 
         # with an empty body section to be explicitly zero length.
-        if (%{$self->{opt}{body}}) {
+        if ($self->{opt}{body} && %{$self->{opt}{body}}) {
             $request->content_type('application/json');
             $request->content($self->{json_parser}->encode($self->{opt}{body}));
         } else {
