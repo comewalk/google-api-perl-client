@@ -42,7 +42,8 @@
             "JSON::WebToken" : "0",
             "LWP::Protocol::https" : "0",
             "URI" : "0",
-            "URI::Escape" : "0"
+           "URI::Escape" : "0",
+           "URI::Template" : "0"
          }
       },
       "test" : {
@@ -77,4 +78,3 @@
       "shigeta <shigeta@typhoon.(none)>"
    ]
 }
-
