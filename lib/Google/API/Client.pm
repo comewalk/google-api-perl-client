@@ -32,6 +32,9 @@ sub build {
         $discovery_service_url .= '?version={apiVersion}';
     }
 
+    if ($self->_is_v1_discovery_url($service, $version)) {
+        $discovery_service_url = 'https://www.googleapis.com/discovery/v1/apis/{api}/{apiVersion}/rest';
+    }
     $discovery_service_url =~ s/{api}/$service/;
     $discovery_service_url =~ s/{apiVersion}/$version/;
 
@@ -100,6 +103,20 @@ sub _new_json_parser {
     require JSON;
     my $parser = JSON->new;
     return $parser;
+}
+
+sub _is_v1_discovery_url {
+    my ($self, $service, $version) = @_;
+    # Following services are still using V1 type URL
+    if (($service eq 'compute' && $version eq 'alpha') ||
+        ($service eq 'compute' && $version eq 'beta') ||
+        ($service eq 'compute' && $version eq 'v1') ||
+        ($service eq 'drive' && $version eq 'v2') ||
+        ($service eq 'drive' && $version eq 'v3') ||
+        ($service eq 'oauth2' && $version eq 'v2')) {
+        return 1;
+    }
+    return;
 }
 
 1;
