@@ -47,6 +47,7 @@ sub build {
 
     my $req = HTTP::Request->new(GET => $discovery_service_url);
     my $res = $self->{ua}->request($req);
+    $self->{ua}{response} = $res;
     unless ($res->is_success) {
         # throw an error
         die 'could not get service document.' . $res->status_line;
