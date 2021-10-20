@@ -27,7 +27,11 @@ sub build {
     my $self = shift;
     my ($service, $version, $args) = @_;
 
-    my $discovery_service_url = 'https://www.googleapis.com/discovery/v1/apis/{api}/{apiVersion}/rest';
+    my $discovery_service_url = 'https://{api}.googleapis.com/$discovery/rest';
+    if ($version) {
+        $discovery_service_url .= '?version={apiVersion}';
+    }
+
     $discovery_service_url =~ s/{api}/$service/;
     $discovery_service_url =~ s/{apiVersion}/$version/;
 
