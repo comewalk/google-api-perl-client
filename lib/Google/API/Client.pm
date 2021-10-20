@@ -32,6 +32,8 @@ sub build {
         $discovery_service_url .= '?version={apiVersion}';
     }
 
+    $service = $self->_replace_to_subdomain($service);
+
     if ($self->_is_v1_discovery_url($service, $version)) {
         $discovery_service_url = 'https://www.googleapis.com/discovery/v1/apis/{api}/{apiVersion}/rest';
     }
@@ -103,6 +105,24 @@ sub _new_json_parser {
     require JSON;
     my $parser = JSON->new;
     return $parser;
+}
+
+sub _replace_to_subdomain {
+    my ($self, $service) = @_;
+
+    # Following services are different from subdomains.
+    # It needs to be converted.
+    my %replacement = (
+        'adexchangebuyer2'  => 'adexchangebuyer',
+        'calendar'          => 'calendar-json',
+        'content'           => 'shoppingcontent',
+        'prod_tt_sasportal' => 'prod-tt-sasportal',
+        'translate'         => 'translation',
+    );
+    if (grep { $service eq $_ } keys %replacement) {
+        $service = $replacement{$service};
+    }
+    return $service;
 }
 
 sub _is_v1_discovery_url {
