@@ -27,15 +27,20 @@ sub build {
     my $self = shift;
     my ($service, $version, $args) = @_;
 
-    my $discovery_service_url = 'https://{api}.googleapis.com/$discovery/rest';
-    if ($version) {
-        $discovery_service_url .= '?version={apiVersion}';
-    }
+    my $discovery_service_url;
+    if ($args->{discovery_service_url}) {
+        $discovery_service_url = $args->{discovery_service_url};
+    } else {
+        $discovery_service_url = 'https://{api}.googleapis.com/$discovery/rest';
+        if ($version) {
+            $discovery_service_url .= '?version={apiVersion}';
+        }
 
-    $service = $self->_replace_to_subdomain($service);
+        $service = $self->_replace_to_subdomain($service);
 
-    if ($self->_is_v1_discovery_url($service, $version)) {
-        $discovery_service_url = 'https://www.googleapis.com/discovery/v1/apis/{api}/{apiVersion}/rest';
+        if ($self->_is_v1_discovery_url($service, $version)) {
+            $discovery_service_url = 'https://www.googleapis.com/discovery/v1/apis/{api}/{apiVersion}/rest';
+        }
     }
     $discovery_service_url =~ s/{api}/$service/;
     $discovery_service_url =~ s/{apiVersion}/$version/;
