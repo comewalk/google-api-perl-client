@@ -1,6 +1,7 @@
 Revision history for Perl extension Google::API::Client
 
 {{$NEXT}}
+        - Fix Discovery URL template (Thanks, 7mho7 and robhammond)
 
 0.14  2014-10-18 03:08:30 PDT
         - allow no redirect_uri to support cross-client exchange request #14 (Thanks, razsh)
