@@ -24,7 +24,17 @@ Google::API::Client is a client for Google APIs Discovery Service. You make usin
 
 - new
 - build
+
+    Construct a resource for interacting with an API. The service name and version
+    are passed to specify the build function to retrieve the appropriate discovery
+    document from the server. Calls `build_from_document()` with the downloaded file.
+
 - build\_from\_document
+
+    Same as the `build()` function, but the document is to be passed _locally_
+    instead of being downloaded. The `discovery_service_url` is a deprecated 
+    argument. Instead, the URL is constructed by combining the `rootUrl` and 
+    the `servicePath`.
 
 # AUTHOR
 
@@ -45,8 +55,6 @@ Richie Foreman <richieforeman@google.com> (richieforeman)
 ljanvier
 
 razsh
-
-Sudipta Chatterjee (sudiptachatterjee)
 
 # COPYRIGHT
 

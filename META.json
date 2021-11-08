@@ -4,13 +4,13 @@
       "Takatsugu Shigeta <shigeta@cpan.org>"
    ],
    "dynamic_config" : 0,
-   "generated_by" : "Dist::Milla version v1.0.8, Dist::Zilla version 5.020, CPAN::Meta::Converter version 2.142690",
+   "generated_by" : "Minilla/v3.1.12, CPAN::Meta::Converter version 2.150010",
    "license" : [
       "perl_5"
    ],
    "meta-spec" : {
       "url" : "http://search.cpan.org/perldoc?CPAN::Meta::Spec",
-      "version" : "2"
+      "version" : 2
    },
    "name" : "Google-API-Client",
    "no_index" : {
@@ -20,19 +20,24 @@
          "inc",
          "share",
          "eg",
-         "examples"
+         "examples",
+         "author",
+         "builder"
       ]
    },
    "prereqs" : {
       "configure" : {
          "requires" : {
-            "Module::Build::Tiny" : "0.038"
+            "Module::Build::Tiny" : "0.035"
          }
       },
       "develop" : {
          "requires" : {
-            "Dist::Milla" : "v1.0.8",
-            "Test::Pod" : "1.41"
+            "Test::CPAN::Meta" : "0",
+            "Test::MinimumVersion::Fast" : "0.04",
+            "Test::PAUSE::Permissions" : "0.07",
+            "Test::Pod" : "1.41",
+            "Test::Spellunker" : "v0.2.7"
          }
       },
       "runtime" : {
@@ -42,7 +47,8 @@
             "JSON::WebToken" : "0",
             "LWP::Protocol::https" : "0",
             "URI" : "0",
-            "URI::Escape" : "0"
+            "URI::Escape" : "0",
+            "perl" : "5.008001"
          }
       },
       "test" : {
@@ -51,7 +57,7 @@
          }
       }
    },
-   "release_status" : "stable",
+   "release_status" : "unstable",
    "resources" : {
       "bugtracker" : {
          "web" : "https://github.com/comewalk/google-api-perl-client/issues"
@@ -59,22 +65,25 @@
       "homepage" : "https://github.com/comewalk/google-api-perl-client",
       "repository" : {
          "type" : "git",
-         "url" : "https://github.com/comewalk/google-api-perl-client.git",
+         "url" : "git://github.com/comewalk/google-api-perl-client.git",
          "web" : "https://github.com/comewalk/google-api-perl-client"
       }
    },
-   "version" : "0.14",
+   "version" : "0.15",
    "x_contributors" : [
       "Chylli <chylli.email@gmail.com>",
       "Chylli <chylli@163.com>",
+      "David Murrell <david@murrell.co.nz>",
       "Gustavo Chaves <gustavo@gnustavo.com>",
       "Ludwin Janvier <lud.janvier@gmail.com>",
       "Raz Shlomovich <raz.shlomovich@buzzfeed.com>",
       "Richie Foreman <richie.foreman@gmail.com>",
-      "Takatsugu Shigeta <shigeta@cpan.org>",
+      "Sudipta Chatterjee <agentsmith@google.com>",
+      "Takatsugu Shigeta <takatsugu.shigeta@gmail.com>",
       "Takatsugu Shigeta <tshigeta@user200.sixapart.jp>",
       "Yusuke Ueno <uechoco@gmail.com>",
       "shigeta <shigeta@typhoon.(none)>"
-   ]
+   ],
+   "x_serialization_backend" : "JSON::PP version 2.97001",
+   "x_static_install" : 1
 }
-

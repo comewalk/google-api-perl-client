@@ -1,6 +1,8 @@
 Revision history for Perl extension Google::API::Client
 
 {{$NEXT}}
+
+0.15 2021-11-08T15:25:27Z
         - Fix Discovery URL template (Thanks, 7mho7 and robhammond)
 
 0.14  2014-10-18 03:08:30 PDT
