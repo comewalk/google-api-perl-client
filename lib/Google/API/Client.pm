@@ -45,6 +45,10 @@ sub build {
     $discovery_service_url =~ s/{api}/$service/;
     $discovery_service_url =~ s/{apiVersion}/$version/;
 
+    if (($service eq 'analyticsreporting') && ($version eq 'v4')) {
+        $discovery_service_url = 'https://analyticsreporting.googleapis.com/$discovery/rest';
+    }
+
     my $req = HTTP::Request->new(GET => $discovery_service_url);
     my $res = $self->{ua}->request($req);
     $self->{ua}{response} = $res;
