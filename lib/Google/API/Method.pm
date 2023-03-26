@@ -19,6 +19,43 @@ sub new {
 
 sub execute {
     my ($self, $arg) = @_;
+    my $request = $self->request($arg);
+    if ($arg->{auth_driver}) {
+        $request->header('Authorization',
+            sprintf "%s %s",
+                $arg->{auth_driver}->token_type,
+                $arg->{auth_driver}->access_token);
+    }
+    my $response = $self->{ua}->request($request);
+    if ($response->code == 401 && $arg->{auth_driver}) {
+        $arg->{auth_driver}->refresh;
+        $request->header('Authorization',
+            sprintf "%s %s",
+                $arg->{auth_driver}->token_type,
+                $arg->{auth_driver}->access_token);
+        $response = $self->{ua}->request($request);
+    }
+    unless ($response->is_success) {
+        $self->_die_with_error($response);
+    }
+    if ($response->code == 204) {
+        return 1;
+    }
+    return $response->header('content-type') =~ m!^application/json!
+           ? $self->{json_parser}->decode(decode_utf8($response->content))
+           : $response->content
+           ;
+}
+
+sub batch {
+    my ($self, $arg) = @_;
+    return unless $self->{batch};
+    my $request = $self->request($arg);
+    $self->{batch}->add($request);
+}
+
+sub request {
+    my ($self, $arg) = @_;
     my $url = $self->{base_url} . $self->{doc}{path};
     my $http_method = uc($self->{doc}{httpMethod});
     my %required_param;
@@ -57,31 +94,7 @@ sub execute {
         $uri->query_form(\%q);
         $request = HTTP::Request->new($http_method => $uri);
     }
-    if ($arg->{auth_driver}) {
-        $request->header('Authorization',
-            sprintf "%s %s",
-                $arg->{auth_driver}->token_type,
-                $arg->{auth_driver}->access_token);
-    }
-    my $response = $self->{ua}->request($request);
-    if ($response->code == 401 && $arg->{auth_driver}) {
-        $arg->{auth_driver}->refresh;
-        $request->header('Authorization',
-            sprintf "%s %s",
-                $arg->{auth_driver}->token_type,
-                $arg->{auth_driver}->access_token);
-        $response = $self->{ua}->request($request);
-    }
-    unless ($response->is_success) {
-        $self->_die_with_error($response);
-    }
-    if ($response->code == 204) {
-        return 1;
-    }
-    return $response->header('content-type') =~ m!^application/json!
-           ? $self->{json_parser}->decode(decode_utf8($response->content))
-           : $response->content
-           ;
+    return $request;
 }
 
 sub _die_with_error {
