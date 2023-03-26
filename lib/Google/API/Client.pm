@@ -61,18 +61,26 @@ sub build_from_document {
     my ($document, $url, $args) = @_;
     my $base = $document->{rootUrl}.$document->{servicePath};
     my $base_url = URI->new($base);
-    my $resource = $self->_create_resource($document, $base_url, $args); 
-    return $resource;
+    my $batch;
+    if (my $batchPath = $document->{batchPath}) {
+        $batch = Google::API::Batch->new(
+            base_url    => URI->new($document->{rootUrl} . $batchPath),
+            ua          => $self->{ua},
+            json_parser => $self->{json_parser},
+        );
+    }
+    my $resource = $self->_create_resource($document, $base_url, $args, $batch);
+    return ($resource, $batch);
 }
 
 sub _create_resource {
     my $self = shift;
-    my ($document, $base_url, $args) = @_;
+    my ($document, $base_url, $args, $batch) = @_;
     my $root_resource_obj = Google::API::Resource->new;
     for my $resource (keys %{$document->{resources}}) {
         my $resource_obj;
         if ($document->{resources}{$resource}{resources}) {
-            $resource_obj = $self->_create_resource($document->{resources}{$resource}, $base_url, $args);
+            $resource_obj = $self->_create_resource($document->{resources}{$resource}, $base_url, $args, $batch);
         }
         if ($document->{resources}{$resource}{methods}) {
             unless ($resource_obj) {
@@ -87,6 +95,7 @@ sub _create_resource {
                         base_url => $base_url,
                         doc => $document->{resources}{$resource}{methods}{$method},
                         opt => \%param,
+                        batch => $batch,
                     );
                 });
             }
