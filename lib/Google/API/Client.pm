@@ -6,9 +6,9 @@ our $VERSION = '0.15';
 
 use Google::API::Method;
 use Google::API::Resource;
+use Google::API::Batch;
 
-
-use constant AUTH_URI => 'https://accounts.google.com/o/oauth2/auth';
+use constant AUTH_URI  => 'https://accounts.google.com/o/oauth2/auth';
 use constant TOKEN_URI => 'https://accounts.google.com/o/oauth2/token';
 
 sub new {
@@ -20,7 +20,7 @@ sub new {
     unless (defined $param->{json_parser}) {
         $param->{json_parser} = $class->_new_json_parser;
     }
-    bless { %$param }, $class;
+    bless {%$param}, $class;
 }
 
 sub build {
@@ -49,6 +49,7 @@ sub build {
     my $res = $self->{ua}->request($req);
     $self->{ua}{response} = $res;
     unless ($res->is_success) {
+
         # throw an error
         die 'could not get service document.' . $res->status_line;
     }
@@ -59,7 +60,7 @@ sub build {
 sub build_from_document {
     my $self = shift;
     my ($document, $url, $args) = @_;
-    my $base = $document->{rootUrl}.$document->{servicePath};
+    my $base     = $document->{rootUrl} . $document->{servicePath};
     my $base_url = URI->new($base);
     my $batch;
     if (my $batchPath = $document->{batchPath}) {
@@ -87,20 +88,22 @@ sub _create_resource {
                 $resource_obj = Google::API::Resource->new;
             }
             for my $method (keys %{$document->{resources}{$resource}{methods}}) {
-                $resource_obj->set_attr($method, sub {
-                    my (%param) = @_;
-                    return Google::API::Method->new(
-                        ua => $self->{ua},
-                        json_parser => $self->{json_parser},
-                        base_url => $base_url,
-                        doc => $document->{resources}{$resource}{methods}{$method},
-                        opt => \%param,
-                        batch => $batch,
-                    );
-                });
+                $resource_obj->set_attr(
+                    $method,
+                    sub {
+                        my (%param) = @_;
+                        return Google::API::Method->new(
+                            ua          => $self->{ua},
+                            json_parser => $self->{json_parser},
+                            base_url    => $base_url,
+                            doc         => $document->{resources}{$resource}{methods}{$method},
+                            opt         => \%param,
+                            batch       => $batch,
+                        );
+                    });
             }
         }
-        $root_resource_obj->set_attr($resource, sub { $resource_obj } );
+        $root_resource_obj->set_attr($resource, sub {$resource_obj});
     }
     if ($document->{auth}) {
         $root_resource_obj->{auth_doc} = $document->{auth};
@@ -142,13 +145,15 @@ sub _replace_to_subdomain {
 
 sub _is_v1_discovery_url {
     my ($self, $service, $version) = @_;
+
     # Following services are still using V1 type URL
-    if (($service eq 'compute' && $version eq 'alpha') ||
-        ($service eq 'compute' && $version eq 'beta') ||
-        ($service eq 'compute' && $version eq 'v1') ||
-        ($service eq 'drive' && $version eq 'v2') ||
-        ($service eq 'drive' && $version eq 'v3') ||
-        ($service eq 'oauth2' && $version eq 'v2')) {
+    if (   ($service eq 'compute' && $version eq 'alpha')
+        || ($service eq 'compute' && $version eq 'beta')
+        || ($service eq 'compute' && $version eq 'v1')
+        || ($service eq 'drive'   && $version eq 'v2')
+        || ($service eq 'drive'   && $version eq 'v3')
+        || ($service eq 'oauth2'  && $version eq 'v2'))
+    {
         return 1;
     }
     return;
