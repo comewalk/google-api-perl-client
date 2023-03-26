@@ -2,7 +2,10 @@ package Google::API::OAuth2::Client;
 
 use strict;
 use warnings;
+
+use Carp;
 use URI;
+use URI::Escape qw/uri_escape/;
 
 sub new {
     my $class = shift;
@@ -23,7 +26,7 @@ sub new_from_client_secrets {
     my $class = shift;
     my ($file, $auth_doc) = @_;
     open my $fh, '<', $file
-        or die "$file not found";
+        or croak "$file not found";
     my $content = do { local $/; <$fh> };
     close $fh;
     require JSON;
@@ -41,22 +44,38 @@ sub new_from_client_secrets {
 
 sub authorize_uri {
     my $self = shift;
-    my ($response_type) = @_;
-    $response_type ||= 'code';
+    my %param = @_;
     for my $key (qw/client_id redirect_uri/) {
         return unless $self->{$key};
     }
-    my $authorize_uri = "$self->{auth_uri}?client_id=$self->{client_id}&redirect_uri=$self->{redirect_uri}&response_type=$response_type";
-    if ($self->{auth_doc}) {
-        my @scopes = keys %{$self->{auth_doc}{oauth2}{scopes}};
-        $authorize_uri .= '&scope=' . join ' ', @scopes;
+    my @scopes = ref($param{scopes}) eq 'ARRAY' ? @{$param{scopes}} : ();
+    @scopes = [ keys %{ $self->{auth_doc}{oauth2}{scopes} } ] unless @scopes || !$self->{auth_doc};
+    foreach (@scopes) {
+        next if $_ =~ /^http/;
+        $_ =~ s|^(.+)$|https://www.googleapis.com/auth/$1|;
     }
-    if ($self->{access_type}){
-        $authorize_uri .= "&access_type=$self->{access_type}";
+    croak "'scope' parameter is required" unless @scopes;
+    my %parameters = (
+        client_id => $self->{client_id},
+        redirect_uri => $self->{redirect_uri},
+        response_type => $param{response_type} || 'code',
+        scope => join(' ', @scopes),
+    );
+    $parameters{access_type} = $self->{access_type} if $self->{access_type};
+    $parameters{state} = $param{state} if $param{state};
+    $parameters{include_granted_scopes} = $param{include_granted_scopes} if $param{include_granted_scopes};
+    $parameters{login_hint} = $param{login_hint} if $param{login_hint};
+    $parameters{approval_prompt} = $self->{approval_prompt} if $self->{approval_prompt};
+    $parameters{prompt} = $param{prompt} if $param{prompt};
+    $parameters{hd} = $param{hd} if $param{hd};
+    
+    my @parameters = qw/client_id redirect_uri response_type scope access_type state include_granted_scopes login_hint approval_prompt prompt hd/;
+    my $authorize_uri = $self->{auth_uri} . '?';
+    foreach my $param (@parameters) {
+        next unless $parameters{$param};
+        $authorize_uri .= "&$param=" . uri_escape($parameters{$param});
     }
-    if ($self->{approval_prompt}){
-        $authorize_uri .= "&approval_prompt=$self->{approval_prompt}";
-    }
+
     return URI->new($authorize_uri)->as_string;
 }
 
