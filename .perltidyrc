@@ -1,9 +1,11 @@
 --indent-columns=4
 --continuation-indentation=2
---maximum-line-length=150
+--maximum-line-length=200
 --paren-tightness=2
 --brace-tightness=2
 --block-brace-tightness=1
 --square-bracket-tightness=1
 --maximum-consecutive-blank-lines=2
 --cuddled-else
+--stack-opening-tokens
+--stack-closing-tokens
