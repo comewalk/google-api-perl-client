@@ -162,6 +162,7 @@ Google::API::Client - A client for Google APIs Discovery Service
 
   my $client = Google::API::Client->new;
   my $service = $client->build('urlshortener', 'v1');
+  my $url = $service->url;
 
   # Get shortened URL 
   my $body = {
