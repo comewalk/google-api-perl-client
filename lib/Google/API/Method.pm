@@ -48,10 +48,10 @@ sub execute {
 }
 
 sub batch {
-    my ($self, $arg) = @_;
+    my ($self, $callback) = @_;
     return unless $self->{batch};
-    my $request = $self->request($arg);
-    $self->{batch}->add($request);
+    my $request = $self->request({});
+    $self->{batch}->add($request, $callback);
 }
 
 sub request {
@@ -94,6 +94,7 @@ sub request {
         $uri->query_form(\%q);
         $request = HTTP::Request->new($http_method => $uri);
     }
+    print $request->as_string . "\n" if $arg->{debug};
     return $request;
 }
 
