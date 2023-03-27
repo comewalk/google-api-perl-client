@@ -43,8 +43,13 @@ sub new_from_client_secrets {
 }
 
 sub authorize_uri {
-    my $self  = shift;
-    my %param = @_;
+    my $self = shift;
+    my %param;
+    if (@_ == 1) {
+        ($param{response_type}) = @_;
+    } else {
+        %param = @_;
+    }
     for my $key (qw/client_id redirect_uri/) {
         return unless $self->{$key};
     }
