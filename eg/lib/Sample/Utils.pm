@@ -7,7 +7,7 @@ use base 'Exporter';
 our @EXPORT_OK = qw/get_or_restore_token store_token/;
 
 sub get_or_restore_token {
-    my ($file, $auth_driver) = @_;
+    my ($file, $auth_driver, $scope) = @_;
     my $access_token;
     if (-f $file) {
         open my $fh, '<', $file;
@@ -19,7 +19,9 @@ sub get_or_restore_token {
         }
         $auth_driver->token_obj($access_token);
     } else {
-        my $auth_url = $auth_driver->authorize_uri;
+        my %args;
+        $args{scope} = $scope if $scope;
+        my $auth_url = $auth_driver->authorize_uri(%args);
         say 'Go to the following link in your browser:';
         say $auth_url;
     
