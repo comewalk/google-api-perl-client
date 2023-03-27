@@ -65,13 +65,14 @@ sub build_from_document {
     my $batch;
     if (my $batchPath = $document->{batchPath}) {
         $batch = Google::API::Batch->new(
-            base_url    => URI->new($document->{rootUrl} . $batchPath),
+            batch_url   => URI->new($document->{rootUrl} . $batchPath),
             ua          => $self->{ua},
             json_parser => $self->{json_parser},
         );
     }
     my $resource = $self->_create_resource($document, $base_url, $args, $batch);
-    return ($resource, $batch);
+    return ($resource, $batch) if wantarray;
+    return $resource;
 }
 
 sub _create_resource {
