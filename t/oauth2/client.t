@@ -44,7 +44,7 @@ $auth_driver = Google::API::OAuth2::Client->new({
     client_secret => $client_secret,
     redirect_uri  => $redirect_uri,
 });
-is $auth_driver->authorize_uri(response_type => 'token', scope => 'openid'), "$auth_uri?client_id=$client_id&redirect_uri=$escaped_redirect_uri&response_type=token&scope=openid";
+is $auth_driver->authorize_uri('token'), "$auth_uri?client_id=$client_id&redirect_uri=$escaped_redirect_uri&response_type=token&scope=openid";
 
 $auth_driver = Google::API::OAuth2::Client->new({
         auth_uri      => $auth_uri,
