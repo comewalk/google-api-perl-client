@@ -13,7 +13,7 @@ use Time::HiRes qw(time usleep);
 use constant MAX_BATCH_LIMIT => 1000;
 
 sub new {
-	my ( $class, %param ) = @_;
+	my ($class, %param) = @_;
 	my $self = {
 		ua          => $param{ua},
 		json_parser => $param{json_parser},
@@ -23,49 +23,52 @@ sub new {
 		_callbacks  => [],
 		_indexes    => [],
 		_last_index => 0,
+		_uuid       => Data::UUID->new,
+		_batch_uuid => undef,
 	};
-	return bless( $self, $class );
+	return bless($self, $class);
 }
 
 sub add {
-	my ( $self, $request, $callback ) = @_;
+	my ($self, $request, $callback) = @_;
 	croak "Exceeded the maximum calls($self->MAX_BATCH_LIMIT) in a single batch request"
 	  if $self->{_last_index} >= $self->MAX_BATCH_LIMIT;
 	my $index = $self->_next_index;
-	push @{ $self->{_requests} },  $request;
-	push @{ $self->{_callbacks} }, $callback;
-	push @{ $self->{_indexes} },   $index;
+	push @{$self->{_requests}},  $request;
+	push @{$self->{_callbacks}}, $callback;
+	push @{$self->{_indexes}},   $index;
 }
 
 sub execute {
-	my ( $self, $arg ) = @_;
-	return unless @{ $self->{_indexes} };
-	$self->_execute( $arg, $self->{_indexes} );
+	my ($self, $arg) = @_;
+	return unless @{$self->{_indexes}};
+	$self->_execute($arg, $self->{_indexes});
+	$arg->{debug} = 0;
 	my @retry_indexes;
 
-	foreach my $index ( @{ $self->{_indexes} } ) {
+	foreach my $index (@{$self->{_indexes}}) {
 		my $response = $self->{_responses}->{$index};
 		push @retry_indexes, $index if $response->code == 401;
 	}
 
-	if ( @retry_indexes && $arg->{auth_driver} ) {
+	if (@retry_indexes && $arg->{auth_driver}) {
 		$arg->{auth_driver}->refresh;
-		$self->_execute( $arg, \@retry_indexes );
+		$self->_execute($arg, \@retry_indexes);
 	}
 
 	# https://developers.google.com/admin-sdk/directory/v1/limits#backoff
-	unless ( $arg->{disable_exponential_backoff} ) {
+	unless ($arg->{disable_exponential_backoff}) {
 		@retry_indexes = ();
-		foreach my $index ( @{ $self->{_indexes} } ) {
+		foreach my $index (@{$self->{_indexes}}) {
 			my $response = $self->{_responses}->{$index};
 			push @retry_indexes, $index if $self->_is_retriable($response);
 		}
 
 		if (@retry_indexes) {
 			my $try_count = 0;
-			while ( $try_count < 5 ) {
-				usleep( 2**$try_count * 1000**2 + 1000 * rand(999) );
-				$self->_execute( $arg, \@retry_indexes );
+			while ($try_count < 5) {
+				usleep(2**$try_count * 1000**2 + 1000 * rand(999));
+				$self->_execute($arg, \@retry_indexes);
 				my @retry_indexes_tmp;
 				foreach my $index (@retry_indexes) {
 					my $response = $self->{_responses}->{$index};
@@ -78,16 +81,28 @@ sub execute {
 		}
 	}
 
-	foreach my $index ( @{ $self->{_indexes} } ) {
+	foreach my $index (@{$self->{_indexes}}) {
 		my $response = $self->{_responses}->{$index};
 		my $callback = $self->{_callbacks}->[$index];
-		$callback->($response) if $callback;
+
+		return unless $response->is_success;
+		return unless $callback;
+		if ($response->code == 204) {
+			$callback->(1);
+		} else {
+			my $content =
+				$response->header('content-type') =~ m!^application/json!
+			  ? $self->{json_parser}->decode(decode_utf8($response->decoded_content))
+			  : $response->decoded_content;
+			$callback->($content);
+		}
+
 	}
 	$self->_reset;
 }
 
 sub _execute {
-	my ( $self, $arg, $indexes ) = @_;
+	my ($self, $arg, $indexes) = @_;
 	my @parts;
 	foreach my $index (@$indexes) {
 		my $request = $self->{_requests}->[$index];
@@ -97,81 +112,77 @@ sub _execute {
 				'Content-Transfer-Encoding' => 'binary',
 				'Content-ID'                => $self->_ix2header($index),
 			],
-			body => $self->_serialize_request($request)
-		);
+			body => $self->_serialize_request($request));
 		push @parts, $part;
 	}
 	my $batch_request = HTTP::Request->new;
-	if ($arg->{auth_driver}) {
-        $batch_request->header('Authorization',
-            sprintf "%s %s",
-                $arg->{auth_driver}->token_type,
-                $arg->{auth_driver}->access_token);
-    }
-	my $boundary = Data::UUID->create_str;
+	my $boundary      = $self->{_uuid}->create_str;
 	$batch_request->method('POST');
-	$batch_request->uri( $self->{batch_url} );
-	$batch_request->header( 'Content-Type'    => qq{multipart/mixed; boundary="===============$boundary=="} );
-	$batch_request->header( 'Accept-Encoding' => 'gzip' );
-	$batch_request->header( 'User-Agent'      => 'Google::API::Client (gzip)' );
+	$batch_request->uri($self->{batch_url});
+	$batch_request->header('Content-Type'    => qq{multipart/mixed; boundary="$boundary"});
+	$batch_request->header('Accept-Encoding' => 'gzip');
+	$batch_request->header('User-Agent'      => 'Google::API::Client (gzip)');
 	$batch_request->add_part($_) foreach @parts;
+	print $batch_request->as_string . "\n" if $arg->{debug};
+
+	if ($arg->{auth_driver}) {
+		$batch_request->header('Authorization', sprintf "%s %s", $arg->{auth_driver}->token_type, $arg->{auth_driver}->access_token);
+	}
 	my $response = $self->{ua}->request($batch_request);
 
-	if ( $response->is_success ) {
+	if ($response->is_success) {
 		my $content_type = $response->header('Content-Type');
 		croak 'Not a multipart response' unless $content_type =~ m|^multipart/mixed;|;
 		my $header        = "Content-Type: $content_type\r\n\r\n";
-		my $mime_response = Email::MIME->new( $header . $response->decoded_content );
+		my $mime_response = Email::MIME->new($header . $response->decoded_content);
 		my @parts         = $mime_response->parts;
 
 		foreach my $part (@parts) {
-			my $index = $self->_header2ix( $part->header('Content-ID') );
-			$self->{_responses}->{$index} = HTTP::Response->parse( $part->body );
+			my $index = $self->_header2ix($part->header('Content-ID'));
+			$self->{_responses}->{$index} = HTTP::Response->parse($part->body);
 		}
-	}
-	else {
+	} else {
 		my $content = $response->decoded_content;
 		croak 'Batch request failed: ' . $self->{batch_url} . "\n$content";
 	}
 }
 
 sub _is_retriable {
-	my ( $self, $response ) = @_;
-	my %retriable_reasons = ( userRateLimitExceeded => 1, quotaExceeded => 1, rateLimitExceeded => 1, conflict => 1 );
+	my ($self, $response) = @_;
+	my %retriable_reasons = (userRateLimitExceeded => 1, quotaExceeded => 1, rateLimitExceeded => 1, conflict => 1);
 	if (   $response->code == 403
 		|| $response->code == 429
-		|| ( $response->code == 409 && $response->request->method ne 'DELETE' ) )
+		|| ($response->code == 409 && $response->request->method ne 'DELETE'))
 	{
-		my $data   = $self->{json_parser}->decode( decode_utf8( $response->decoded_content ) );
+		my $data   = $self->{json_parser}->decode(decode_utf8($response->decoded_content));
 		my $reason = $data->{error}->{errors}->[0]->{reason};
 		return $retriable_reasons{$reason};
-	}
-	elsif ( $response->code >= 500 ) {
+	} elsif ($response->code >= 500) {
 		return 1;
 	}
 }
 
 sub _ix2header {
-	my ( $self, $index ) = @_;
-	$self->{_uuid} = Data::UUID->new->create_str unless $self->{_uuid};
-	my $uuid = $self->{_uuid};
+	my ($self, $index) = @_;
+	$self->{_batch_uuid} = $self->{_uuid}->create_str unless $self->{_batch_uuid};
+	my $uuid = $self->{_batch_uuid};
 	return "<$uuid + $index>";
 }
 
 sub _header2ix {
-	my ( $self, $header ) = @_;
-	my ( $base, $index )  = split( / \+ /, substr( $header, 1, -1 ) );
+	my ($self, $header) = @_;
+	my ($base, $index)  = split(/ \+ /, substr($header, 1, -1));
 	return $index;
 }
 
 sub _next_index {
 	my $self = shift;
 	$self->{_last_index} = 0 unless $self->{_last_index};
-	return ++$self->{_last_index};
+	return $self->{_last_index}++;
 }
 
 sub _serialize_request {
-	my ( $self, $request ) = @_;
+	my ($self, $request) = @_;
 	my $uri = $request->uri;
 	$uri =~ s|^https?://.*?(/.*)$|$1|;
 	$request->uri($uri);
@@ -186,7 +197,7 @@ sub _reset {
 	$self->{_callbacks}  = [];
 	$self->{_indexes}    = [];
 	$self->{_last_index} = 0;
-	$self->{_uuid}       = undef;
+	$self->{_batch_uuid} = undef;
 }
 
 1;
