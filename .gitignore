@@ -8,4 +8,3 @@ MYMETA.*
 eg/*/token.dat
 *~
 local/
-/client_secret.json
