@@ -27,6 +27,7 @@ sub execute {
                 $arg->{auth_driver}->access_token);
     }
     my $response = $self->{ua}->request($request);
+    print STDERR $response->as_string . "\n" if $arg->{debug};
     if ($response->code == 401 && $arg->{auth_driver}) {
         $arg->{auth_driver}->refresh;
         $request->header('Authorization',
@@ -94,7 +95,7 @@ sub request {
         $uri->query_form(\%q);
         $request = HTTP::Request->new($http_method => $uri);
     }
-    print $request->as_string . "\n" if $arg->{debug};
+    print STDERR $request->as_string . "\n" if $arg->{debug};
     return $request;
 }
 

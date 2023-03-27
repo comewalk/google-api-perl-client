@@ -43,6 +43,7 @@ sub execute {
 	my ($self, $arg) = @_;
 	return unless @{$self->{_indexes}};
 	$self->_execute($arg, $self->{_indexes});
+	my $debug = $arg->{debug};
 	$arg->{debug} = 0;
 	my @retry_indexes;
 
@@ -85,6 +86,7 @@ sub execute {
 		my $response = $self->{_responses}->{$index};
 		my $callback = $self->{_callbacks}->[$index];
 
+		print STDERR $response->as_string . "\n" if $debug;
 		return unless $response->is_success;
 		return unless $callback;
 		if ($response->code == 204) {
@@ -92,8 +94,8 @@ sub execute {
 		} else {
 			my $content =
 				$response->header('content-type') =~ m!^application/json!
-			  ? $self->{json_parser}->decode(decode_utf8($response->decoded_content))
-			  : $response->decoded_content;
+			  ? $self->{json_parser}->decode(decode_utf8($response->content))
+			  : $response->content;
 			$callback->($content);
 		}
 
@@ -119,11 +121,9 @@ sub _execute {
 	my $boundary      = $self->{_uuid}->create_str;
 	$batch_request->method('POST');
 	$batch_request->uri($self->{batch_url});
-	$batch_request->header('Content-Type'    => qq{multipart/mixed; boundary="$boundary"});
-	$batch_request->header('Accept-Encoding' => 'gzip');
-	$batch_request->header('User-Agent'      => 'Google::API::Client (gzip)');
+	$batch_request->header('Content-Type' => qq{multipart/mixed; boundary="$boundary"});
 	$batch_request->add_part($_) foreach @parts;
-	print $batch_request->as_string . "\n" if $arg->{debug};
+	print STDERR $batch_request->as_string . "\n" if $arg->{debug};
 
 	if ($arg->{auth_driver}) {
 		$batch_request->header('Authorization', sprintf "%s %s", $arg->{auth_driver}->token_type, $arg->{auth_driver}->access_token);
