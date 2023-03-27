@@ -8,7 +8,7 @@ use Encode;
 use Data::UUID;
 use Email::MIME;
 use HTTP::Request;
-use Time::HiRes qw(time usleep);
+use Time::HiRes qw(usleep);
 
 use constant MAX_BATCH_LIMIT => 1000;
 
