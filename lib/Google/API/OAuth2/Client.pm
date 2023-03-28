@@ -91,18 +91,14 @@ sub exchange {
     my $self = shift;
     my ($code) = @_;
     return unless $code;
-    return unless $self->{auth_doc};
     for my $key (qw/client_id client_secret/) {
         return unless $self->{$key};
     }
-    my @scopes = keys %{$self->{auth_doc}{oauth2}{scopes}};
-    my $scopes = join ' ', @scopes;
-    my @param  = (
+    my @param = (
         client_id     => $self->{client_id},
         client_secret => $self->{client_secret},
         redirect_uri  => $self->{redirect_uri},
         code          => $code,
-        scope         => $scopes,
         grant_type    => 'authorization_code',
     );
     require HTTP::Request::Common;
