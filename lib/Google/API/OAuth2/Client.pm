@@ -68,6 +68,7 @@ sub authorize_uri {
         response_type => $param{response_type} || 'code',
         scope         => join(' ', @scope),
     );
+    $parameters{access_type}            = $self->{access_type}           if $self->{access_type};
     $parameters{access_type}            = $param{access_type}            if $param{access_type};
     $parameters{state}                  = $param{state}                  if $param{state};
     $parameters{include_granted_scopes} = $param{include_granted_scopes} if $param{include_granted_scopes};
