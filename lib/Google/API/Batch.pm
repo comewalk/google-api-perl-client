@@ -201,3 +201,59 @@ sub _reset {
 }
 
 1;
+__END__
+
+=encoding utf-8
+
+=for stopwords
+
+=head1 NAME
+
+Google::API::Batch - A way to perform batch requests
+
+=head1 SYNOPSIS
+
+  use Google::API::Client;
+  my $client = Google::API::Client->new;
+  my ($service, $batch) = $client->build('drive', 'v3');
+  my $auth_driver = Google::API::OAuth2::Client->new_from_client_secrets($client_secrets, $service->{auth_doc});
+
+  my $files;
+  my $somefile;
+
+  $service->files->list->batch(sub { $files = shift });
+  $service->files->list(body => {q => qq{name = $somefilename}})->batch(sub { $somefile = shift });
+  $batch->execute({auth_driver => $auth_driver, debug => 1});
+
+=head1 DESCRIPTION
+
+Google::API::Batch is a way to perform batch requests. When building a client, you get both the $client and a $batch object.
+
+=head1 METHODS
+
+=over 4
+
+=item new
+
+=item add
+
+=item execute
+
+=back
+
+=head1 AUTHOR
+
+Takatsugu Shigeta E<lt>shigeta@cpan.orgE<gt>
+
+=head1 COPYRIGHT
+
+Copyright 2011- Takatsugu Shigeta
+
+=head1 LICENSE
+
+This library is free software; you can redistribute it and/or modify
+it under the same terms as Perl itself.
+
+=head1 SEE ALSO
+
+=cut

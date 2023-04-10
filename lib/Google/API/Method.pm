@@ -142,6 +142,10 @@ Google::API::Method is an implementation of methods part in Discovery Document R
 
 =item execute
 
+=item batch
+
+=item request
+
 =back
 
 =head1 AUTHOR
