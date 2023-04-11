@@ -4,7 +4,7 @@
       "Takatsugu Shigeta <shigeta@cpan.org>"
    ],
    "dynamic_config" : 0,
-   "generated_by" : "Minilla/v3.1.12, CPAN::Meta::Converter version 2.150010",
+   "generated_by" : "Minilla/v3.1.21, CPAN::Meta::Converter version 2.150010",
    "license" : [
       "perl_5"
    ],
@@ -42,10 +42,13 @@
       },
       "runtime" : {
          "requires" : {
+            "Data::UUID" : "0",
+            "Email::MIME" : "0",
             "HTTP::Request" : "0",
             "JSON" : "0",
             "JSON::WebToken" : "0",
             "LWP::Protocol::https" : "0",
+            "Time::HiRes" : "0",
             "URI" : "0",
             "URI::Escape" : "0",
             "perl" : "5.008001"
@@ -60,9 +63,9 @@
    "release_status" : "unstable",
    "resources" : {
       "bugtracker" : {
-         "web" : "https://github.com/comewalk/google-api-perl-client/issues"
+         "web" : "https://github.com/manyrdz/google-api-perl-client/issues"
       },
-      "homepage" : "https://github.com/comewalk/google-api-perl-client",
+      "homepage" : "https://github.com/manyrdz/google-api-perl-client",
       "repository" : {
          "type" : "git",
          "url" : "git://github.com/comewalk/google-api-perl-client.git",
@@ -75,6 +78,7 @@
       "Chylli <chylli@163.com>",
       "David Murrell <david@murrell.co.nz>",
       "Gustavo Chaves <gustavo@gnustavo.com>",
+      "José Manuel Rodríguez D <jose93rd@gmail.com>",
       "Ludwin Janvier <lud.janvier@gmail.com>",
       "Raz Shlomovich <raz.shlomovich@buzzfeed.com>",
       "Richie Foreman <richie.foreman@gmail.com>",
@@ -84,6 +88,6 @@
       "Yusuke Ueno <uechoco@gmail.com>",
       "shigeta <shigeta@typhoon.(none)>"
    ],
-   "x_serialization_backend" : "JSON::PP version 2.97001",
+   "x_serialization_backend" : "JSON::PP version 4.04",
    "x_static_install" : 1
 }
